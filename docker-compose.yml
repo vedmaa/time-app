@@ -1,0 +1,43 @@
+version: '3.1'
+
+services:
+  db:
+    hostname: timeapp-db
+    image: mariadb:10.6
+    environment:
+      - MYSQL_ROOT_PASSWORD=veryhardrootpassword123
+      - MYSQL_DATABASE=timeapp-db
+      - MYSQL_USER=timeapp
+      - MYSQL_PASSWORD=password123
+    networks:
+      timeapp-net:
+        aliases:
+          - timeapp-db
+  
+  frontend:
+    hostname: timeapp-frontend
+    image: timeapp-frontend:latest
+    ports: 
+      - 9080:80
+    networks:
+      timeapp-net:
+        aliases:
+          - timeapp-frontend
+  
+  backend:
+    hostname: timeapp-backend
+    image: timeapp-backend:latest
+    environment:
+      - TIMEAPP_PORT=81
+      - TIMEAPP_DB_HOST=timeapp-db
+      - TIMEAPP_DB_PORT=3306
+      - TIMEAPP_DB_NAME=timeapp-db
+      - TIMEAPP_DB_USER=timeapp
+      - TIMEAPP_DB_PASSWORD=password123
+    networks:
+      timeapp-net:
+        aliases:
+          - timeapp-backend
+
+networks:
+  timeapp-net:
